@@ -154,6 +154,39 @@
             </div>
         </div>
     </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-sm border">
+<h4 class="text-xl font-bold text-gray-800 mb-2">15.3. Les Tables en Mémoire (`ENGINE=MEMORY`)</h4>
+<p class="text-gray-700 mb-4">
+Une autre forme de table non persistante est la table en mémoire, créée avec le moteur de stockage <strong>MEMORY</strong>. Contrairement à une table temporaire qui est liée à une session, une table en mémoire est visible par toutes les sessions connectées au serveur MySQL, mais son contenu est entièrement stocké dans la RAM.
+</p>
+<p class="text-gray-700 mb-4">
+Cela les rend extrêmement rapides, idéales pour des données de référence ou des caches qui doivent être accessibles rapidement et par plusieurs utilisateurs. Cependant, leur contenu est <strong>volatile</strong> : si le serveur MySQL redémarre ou s'arrête, les données de ces tables sont perdues.
+</p>
+<p class="text-gray-700 mb-4">Les principales utilisations sont :</p>
+<ul class="list-disc ml-6 text-gray-600 text-sm space-y-1 mb-4">
+<li><strong>Mise en cache rapide :</strong> Pour stocker des résultats de requêtes complexes ou des données rarement modifiées afin d'accélérer les lectures.</li>
+</ul>
+<div class="code-block-wrapper">
+<pre class="code-block"><code class="language-sql"><span class="token-comment">-- Créer une table de cache en mémoire pour des paramètres d'application</span>
+<span class="token-keyword">CREATE TABLE</span> <span class="token-variable">app_cache</span> (
+<span class="token-variable">param_name</span> <span class="token-type">VARCHAR</span>(<span class="token-number">100</span>) <span class="token-keyword">PRIMARY KEY</span>,
+<span class="token-variable">param_value</span> <span class="token-type">VARCHAR</span>(<span class="token-number">255</span>)
+) <span class="token-keyword">ENGINE</span><span class="token-operator">=</span><span class="token-variable">MEMORY</span>;
+<span class="token-comment">-- On peut l'alimenter comme n'importe quelle autre table</span>
+<span class="token-keyword">INSERT INTO</span> <span class="token-variable">app_cache</span> (<span class="token-variable">param_name</span>, <span class="token-variable">param_value</span>) <span class="token-keyword">VALUES</span>
+(<span class="token-string">'site_name'</span>, <span class="token-string">'Mon Super Site'</span>),
+(<span class="token-string">'max_connections'</span>, <span class="token-string">'100'</span>);
+<span class="token-comment">-- La lecture des données est très rapide</span>
+<span class="token-keyword">SELECT</span> <span class="token-variable">param_value</span> <span class="token-keyword">FROM</span> <span class="token-variable">app_cache</span> <span class="token-keyword">WHERE</span> <span class="token-variable">param_name</span> <span class="token-operator">=</span> <span class="token-string">'site_name'</span>;
+<span class="token-comment">-- Si le serveur MySQL redémarre, la table 'app_cache' sera vide.</span>
+<span class="token-comment">-- Pour la supprimer manuellement, on utilise DROP TABLE.</span>
+<span class="token-keyword">DROP TABLE</span> <span class="token-variable">app_cache</span>;
+</code></pre>
+<button class="copy-btn">Copier</button>
+</div>
+</div>
+
     <div class="text-right mt-8"> <a href="#page-top" class="text-sm font-semibold text-blue-600 hover:underline">↑ Retour en haut</a> </div>
 </section>
 
